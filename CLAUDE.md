@@ -30,15 +30,7 @@ Typical Next.js commands:
 
 *Note: Structure will be updated as the project develops*
 
-Expected structure for this stack:
-- `app/` - Next.js App Router pages and layouts
-- `components/` - React components (shadcn/ui)
-- `server/` - tRPC routers and procedures
-- `lib/` - Utility functions and configurations
-- `server/db/` - Database schema and migrations (Kysely)
-- `schema/` - Database schema and migrations (Kysely)
-- `lib/env.js` - Environment variables
-- `lib/trpc/` - tRPC client and server-side code
+Expected structure for this stack. Add this after initial setup:
 
 ## Development Notes
 
