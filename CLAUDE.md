@@ -21,10 +21,10 @@ Cobuilder is a Next.js application using a modern TypeScript stack. This reposit
 *Note: Commands will be updated once package.json is created*
 
 Typical Next.js commands:
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run lint` - Run ESLint
-- `npm run type-check` - Run TypeScript compiler check
+- `pnpm run dev` - Start development server
+- `pnpm run build` - Build for production
+- `pnpm run lint` - Run ESLint
+- `pnpm run type-check` - Run TypeScript compiler check
 
 ## Project Structure
 
