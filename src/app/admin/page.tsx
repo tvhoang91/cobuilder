@@ -1,4 +1,4 @@
-export default function UsersPage() {
+export default function AdminPage() {
   return (
     <div>
       <h1>Users</h1>

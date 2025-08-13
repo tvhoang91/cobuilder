@@ -1,5 +1,6 @@
 export type {
   UserRole,
+  User,
   UpdateUserRole,
   UserTable,
   AccountTable,

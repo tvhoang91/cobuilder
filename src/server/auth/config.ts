@@ -1,25 +1,17 @@
-import { type DefaultSession } from 'next-auth'
-import { type AuthOptions } from 'next-auth'
+import type { NextAuthConfig, DefaultSession } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
-import { db } from '@/server/db'
 import { env } from '@/env.js'
-import type { UserRole } from '@/schema'
+import type { User as UserType } from '@/schema'
 import { KyselyAdapter } from './adapter'
 
 declare module 'next-auth' {
   interface Session extends DefaultSession {
-    user: {
-      id: string
-      role: UserRole
-    } & DefaultSession['user']
+    user: UserType
   }
-
-  interface User {
-    role: UserRole
-  }
+  interface User extends UserType {}
 }
 
-export const authConfig: AuthOptions = {
+export const authConfig: NextAuthConfig = {
   adapter: KyselyAdapter(),
   providers: [
     GoogleProvider({
@@ -38,7 +30,7 @@ export const authConfig: AuthOptions = {
     async session({ session, user }) {
       if (session.user) {
         session.user.id = user.id
-        session.user.role = user.role as UserRole
+        session.user.role = user.role
       }
       return session
     },

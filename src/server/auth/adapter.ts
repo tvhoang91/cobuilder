@@ -8,8 +8,10 @@ export function KyselyAdapter(): Adapter {
   return {
     async createUser(data) {
       const user = { ...data }
-      user.role = user.email === 'tvhoang91@gmail.com' ? 'ADMIN' : 'GUEST'
-      await db.insertInto('User').values(user).executeTakeFirstOrThrow()
+      await db
+        .insertInto('User')
+        .values({ ...user, role: user.email === 'tvhoang91@gmail.com' ? 'ADMIN' : 'GUEST' })
+        .executeTakeFirstOrThrow()
 
       return user
     },
@@ -34,8 +36,8 @@ export function KyselyAdapter(): Adapter {
       if (!result) return null
       return result
     },
-    async updateUser({ id, ...user }) {
-      const userData = user
+    async updateUser(user) {
+      const { id, createdAt, updatedAt, ...userData } = user
       const query = db.updateTable('User').set(userData).where('id', '=', id)
       const result = supportsReturning
         ? query.returningAll().executeTakeFirstOrThrow()
