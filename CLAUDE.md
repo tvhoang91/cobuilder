@@ -1,0 +1,50 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+Cobuilder is a Next.js application using a modern TypeScript stack. This repository is currently in its initial stages of development.
+
+## Technology Stack
+
+- **Frontend**: Next.js with React 19, TypeScript
+- **Styling**: Tailwind CSS v4, shadcn/ui components
+- **API**: tRPC for type-safe APIs
+- **Database**: Kysely for type-safe SQL queries
+- **Authentication**: NextAuth.js
+- **State Management**: TanStack Query (React Query)
+- **Deployment**: Vercel (frontend), Neon (database)
+
+## Development Commands
+
+*Note: Commands will be updated once package.json is created*
+
+Typical Next.js commands:
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run lint` - Run ESLint
+- `npm run type-check` - Run TypeScript compiler check
+
+## Project Structure
+
+*Note: Structure will be updated as the project develops*
+
+Expected structure for this stack:
+- `app/` - Next.js App Router pages and layouts
+- `src/components/` - React components (shadcn/ui)
+- `src/server/` - tRPC routers and procedures
+- `src/lib/` - Utility functions and configurations
+- `src/db/` - Database schema and migrations (Kysely)
+- `src/schema/` - Database schema and migrations (Kysely)
+- `src/env.js` - Environment variables
+- `src/trpc/` - tRPC client and server-side code
+
+## Development Notes
+
+- Use App Router (Next.js 13+) for routing
+- Follow shadcn/ui component patterns for consistent styling
+- Implement tRPC procedures for type-safe API endpoints
+- Use Kysely for database operations with full type safety
+- Configure NextAuth.js for authentication flows
+- Leverage TanStack Query for client-side data fetching and caching
