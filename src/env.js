@@ -8,7 +8,7 @@ export const env = createEnv({
    */
   server: {
     AUTH_SECRET: process.env.NODE_ENV === 'production' ? z.string() : z.string().optional(),
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL: z.url(),
     NODE_ENV: z.enum(['development', 'production']).default('development'),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),

@@ -11,7 +11,7 @@ Cobuilder is a Next.js application using a modern TypeScript stack. This reposit
 - **Frontend**: Next.js with React 19, TypeScript
 - **Styling**: Tailwind CSS v4, shadcn/ui components
 - **API**: tRPC for type-safe APIs
-- **Database**: Kysely for type-safe SQL queries
+- **Database**: Kysely for type-safe SQL queries, Neon PostgreSQL
 - **Authentication**: NextAuth.js
 - **State Management**: TanStack Query (React Query)
 - **Deployment**: Vercel (frontend), Neon (database)
