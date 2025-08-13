@@ -1,16 +1,25 @@
+'use client'
 import Link from 'next/link'
-import { auth } from '@/server/auth'
+import { signIn, signOut } from 'next-auth/react'
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
 } from '@/components/ui/navigation-menu'
-import { UserMenu } from './user-menu'
-import { SignInButton } from './sign-in-button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Button } from '../ui/button'
+import { LogOut, Settings, User } from 'lucide-react'
+import { useAuth } from '@/components/hooks/use-auth'
 
-export default async function Header() {
-  const session = await auth()
+export default function Header() {
+  const { isAuthenticated, isAdmin, user } = useAuth()
 
   return (
     <header className="border-border bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
@@ -48,7 +57,7 @@ export default async function Header() {
                 Projects
               </NavigationMenuLink>
             </NavigationMenuItem>
-            {session?.user?.role === 'ADMIN' && (
+            {isAdmin && (
               <NavigationMenuItem>
                 <NavigationMenuLink
                   href="/admin"
@@ -66,7 +75,33 @@ export default async function Header() {
           <div className="w-full flex-1 md:w-auto md:flex-none" />
 
           {/* User Menu or Login */}
-          {session?.user ? <UserMenu user={session.user} /> : <SignInButton />}
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <User className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end">
+                <div className="flex items-center justify-start gap-2 p-2">
+                  <div className="flex flex-col space-y-1 leading-none">
+                    {user?.name && <p className="font-medium">{user.name}</p>}
+                    {user?.email && <p className="text-muted-foreground w-[200px] truncate text-sm">{user.email}</p>}
+                    {user?.role && <p className="text-muted-foreground text-xs">Role: {user.role}</p>}
+                  </div>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <button onClick={() => signOut()} className="flex w-full items-center">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </button>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button onClick={() => signIn()}>Sign In</Button>
+          )}
         </div>
       </div>
     </header>

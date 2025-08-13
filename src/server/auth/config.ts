@@ -1,15 +1,7 @@
 import type { NextAuthConfig, DefaultSession } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import { env } from '@/env.js'
-import type { User as UserType } from '@/schema'
 import { KyselyAdapter } from './adapter'
-
-declare module 'next-auth' {
-  interface Session extends DefaultSession {
-    user: UserType
-  }
-  interface User extends UserType {}
-}
 
 export const authConfig: NextAuthConfig = {
   adapter: KyselyAdapter(),

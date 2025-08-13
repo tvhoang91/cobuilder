@@ -37,7 +37,7 @@ export function KyselyAdapter(): Adapter {
       return result
     },
     async updateUser(user) {
-      const { id, createdAt, updatedAt, ...userData } = user
+      const { id, ...userData } = user
       const query = db.updateTable('User').set(userData).where('id', '=', id)
       const result = supportsReturning
         ? query.returningAll().executeTakeFirstOrThrow()
