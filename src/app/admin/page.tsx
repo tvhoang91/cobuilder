@@ -5,9 +5,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useAuth } from '@/components/hooks/use-auth'
 
 export default function AdminPage() {
-  const [users] = api.user.getAllUsers.useSuspenseQuery()
+  const { isAdmin } = useAuth()
+  const { data: users } = api.user.getAllUsers.useQuery(undefined, {
+    enabled: isAdmin,
+  })
 
   const utils = api.useUtils()
   const updateRoleMutation = api.user.updateRole.useMutation({
@@ -39,7 +43,7 @@ export default function AdminPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user) => (
+              {users?.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="flex items-center gap-2 font-medium">
                     <Avatar>
@@ -69,6 +73,22 @@ export default function AdminPage() {
                   </TableCell>
                 </TableRow>
               ))}
+
+              {users?.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={3} className="h-24 text-center">
+                    No users found
+                  </TableCell>
+                </TableRow>
+              )}
+
+              {users === undefined && (
+                <TableRow>
+                  <TableCell colSpan={3} className="h-24 text-center">
+                    Loading...
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>
