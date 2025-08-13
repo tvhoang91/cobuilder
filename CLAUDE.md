@@ -32,11 +32,9 @@ Typical Next.js commands:
 
 Expected structure for this stack. Add this after initial setup:
 
-## Development Notes
+## Authentication and Authorization
 
-- Use App Router (Next.js 13+) for routing
-- Follow shadcn/ui component patterns for consistent styling
-- Implement tRPC procedures for type-safe API endpoints
-- Use Kysely for database operations with full type safety
-- Configure NextAuth.js for authentication flows
-- Leverage TanStack Query for client-side data fetching and caching
+- ADMIN is the user with email "tvhoang91@gmail.com"
+- DESIGNER: admin give the user role DESIGNER. designer could access to all features except Manage User.
+- GUEST: anyone could login with Google Account. only see the Welcome page ask to contact admin
+- PUBLIC: before login, user could see the Welcome page with Login Button

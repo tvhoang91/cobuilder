@@ -1,20 +1,42 @@
-import { z } from 'zod'
-
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc'
+import { createTRPCRouter, protectedProcedure, adminProcedure, designerProcedure } from '@/server/api/trpc'
+import { updateUserRoleSchema } from '@/schema'
 
 export const userRouter = createTRPCRouter({
-  create: protectedProcedure.input(z.object({ name: z.string().min(1) })).mutation(async ({ ctx, input }) => {
-    await ctx.db.insert(posts).values({
-      name: input.name,
-      createdById: ctx.session.user.id,
-    })
+  // Get current user profile (any authenticated user)
+  getProfile: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.session.user
   }),
 
-  getAll: protectedProcedure.query(async ({ ctx }) => {
-    const post = await ctx.db.query.posts.findFirst({
-      orderBy: (posts, { desc }) => [desc(posts.createdAt)],
-    })
+  getAllUsers: adminProcedure.query(async ({ ctx }) => {
+    const users = await ctx.db.selectFrom('User').select(['id', 'name', 'email', 'image', 'role']).execute()
+    return users
+  }),
 
-    return post ?? null
+  // Update user role (Admin only)
+  updateRole: adminProcedure.input(updateUserRoleSchema).mutation(async ({ ctx, input }) => {
+    // Prevent admin from changing their own role
+    if (input.id === ctx.session.user.id) {
+      throw new Error('Cannot change your own role')
+    }
+
+    const updatedUser = await ctx.db
+      .updateTable('User')
+      .set({ role: input.role })
+      .where('id', '=', input.id)
+      .returningAll()
+      .executeTakeFirst()
+
+    return updatedUser
+  }),
+
+  // Get users for design collaboration (Designer and Admin can see other users)
+  getCollaborators: designerProcedure.query(async ({ ctx }) => {
+    const users = await ctx.db
+      .selectFrom('User')
+      .select(['id', 'name', 'email', 'image', 'role'])
+      .where('role', 'in', ['ADMIN', 'DESIGNER'])
+      .execute()
+
+    return users
   }),
 })

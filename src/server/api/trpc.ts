@@ -128,3 +128,33 @@ export const protectedProcedure = t.procedure.use(timingMiddleware).use(({ ctx, 
     },
   })
 })
+
+/**
+ * Admin-only procedure
+ *
+ * Only allows users with ADMIN role to access the procedure
+ */
+export const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (ctx.session.user.role !== 'ADMIN') {
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'Admin access required',
+    })
+  }
+  return next({ ctx })
+})
+
+/**
+ * Designer or Admin procedure
+ *
+ * Allows users with DESIGNER or ADMIN role to access the procedure
+ */
+export const designerProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (!['ADMIN', 'DESIGNER'].includes(ctx.session.user.role)) {
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'Designer or Admin access required',
+    })
+  }
+  return next({ ctx })
+})
