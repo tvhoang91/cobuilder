@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/layout/header'
 import { SessionProvider } from 'next-auth/react'
+import { TRPCReactProvider } from '@/trpc/react'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -28,10 +29,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SessionProvider>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            {children}
-          </div>
+          <TRPCReactProvider>
+            <div className="flex min-h-screen flex-col">
+              <Header />
+              {children}
+            </div>
+          </TRPCReactProvider>
         </SessionProvider>
       </body>
     </html>
