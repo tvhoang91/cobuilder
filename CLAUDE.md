@@ -143,6 +143,51 @@ Available shadcn/ui components:
 - Form validation with Zod schemas
 - Toast notifications for user feedback
 
+### Server-side + Client-side tRPC Pattern
+For pages that need server-side data loading with client-side mutations (like admin page):
+
+**Server Component (page.tsx)**:
+```typescript
+import { api, HydrateClient } from '@/trpc/server'
+import { auth } from '@/server/auth'
+
+export default async function Page() {
+  const session = await auth()
+  const data = await api.someRouter.someQuery()
+  
+  return (
+    <HydrateClient>
+      <ClientComponent initialData={data} />
+    </HydrateClient>
+  )
+}
+```
+
+**Client Component**:
+```typescript
+'use client'
+import { api } from '@/trpc/react'
+
+export function ClientComponent({ initialData }) {
+  const { data } = api.someRouter.someQuery.useQuery(undefined, {
+    initialData,
+    refetchOnMount: false,
+  })
+  
+  const utils = api.useUtils()
+  const mutation = api.someRouter.someMutation.useMutation({
+    onSuccess: () => utils.someRouter.someQuery.invalidate()
+  })
+  
+  // Interactive UI with mutations...
+}
+```
+
+This pattern provides:
+- Fast initial load (server-side data)
+- Client-side mutations and cache invalidation
+- No loading states on initial render
+
 ## Notes for Development
 
 - Always use existing UI components from `src/components/ui/`
