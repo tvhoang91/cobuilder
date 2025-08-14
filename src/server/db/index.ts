@@ -1,10 +1,12 @@
 import { Kysely, PostgresDialect } from 'kysely'
 import { neonConfig, Pool } from '@neondatabase/serverless'
 import { env } from '@/env.js'
-import type { UserTable, AccountTable, SessionTable, VerificationTokenTable } from '@/schema'
+import type { UserTable, AccountTable, SessionTable, VerificationTokenTable, ProjectTable, BlockTable } from '@/schema'
 import ws from 'ws'
 
 export interface Database {
+  Project: ProjectTable
+  Block: BlockTable
   User: UserTable
   Account: AccountTable
   Session: SessionTable

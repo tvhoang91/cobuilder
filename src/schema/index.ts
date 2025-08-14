@@ -1,10 +1,13 @@
-export type {
-  UserRole,
-  User,
-  UpdateUserRole,
-  UserTable,
-  AccountTable,
-  SessionTable,
-  VerificationTokenTable,
-} from './user-schema'
+export type { UserRole, User, UserTable, AccountTable, SessionTable, VerificationTokenTable } from './user-schema'
 export { updateUserRoleSchema } from './user-schema'
+
+export type { Project, ProjectTable } from './project-schema'
+export { createProjectSchema, updateProjectSchema } from './project-schema'
+
+export type { Block, BlockTable, AiModel } from './block-schema'
+export {
+  createBlockSchema,
+  promptBlockSchema,
+  generateBlockTextWireframeSchema,
+  generateBlockCodeWireframeSchema,
+} from './block-schema'

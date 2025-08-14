@@ -1,4 +1,6 @@
 import { userRouter } from '@/server/api/routers/user'
+import { projectRouter } from '@/server/api/routers/project'
+import { blockRouter } from '@/server/api/routers/block'
 import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc'
 
 /**
@@ -8,6 +10,8 @@ import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc'
  */
 export const appRouter = createTRPCRouter({
   user: userRouter,
+  project: projectRouter,
+  block: blockRouter,
 })
 
 // export type definition of API
