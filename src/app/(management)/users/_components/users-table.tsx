@@ -33,9 +33,6 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Users</CardTitle>
-      </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>

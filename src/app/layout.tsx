@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
-import Header from '@/components/layout/header'
 import { SessionProvider } from 'next-auth/react'
 import { TRPCReactProvider } from '@/trpc/react'
 
@@ -29,12 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SessionProvider>
-          <TRPCReactProvider>
-            <div className="flex min-h-screen flex-col">
-              <Header />
-              {children}
-            </div>
-          </TRPCReactProvider>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
         </SessionProvider>
       </body>
     </html>

@@ -19,7 +19,7 @@ async function handleSignIn() {
   await signIn()
 }
 
-export async function UserMenu() {
+export default async function UserMenu() {
   const session = await auth()
   const isAuthenticated = !!session?.user
   const user = session?.user

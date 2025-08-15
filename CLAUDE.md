@@ -30,6 +30,8 @@ Cobuilder is a Next.js application using a modern TypeScript stack for collabora
 
 ## Project Structure
 
+### Folder Structure
+
 ```
 src/
 ├── app/                    # Next.js App Router pages
@@ -54,6 +56,18 @@ src/
 ├── trpc/                  # tRPC client configuration
 ├── types/                 # Global TypeScript definitions
 └── lib/                   # Utility functions
+```
+
+### URL Structure
+
+```
+/ - Welcome page
+/(management) - Layout for management sidebar
+/(management)/projects - Project management page
+/(management)/users - User management page
+/builder/[projectSlug] - Layout for project sidebar
+/builder/[projectSlug] - Project page
+/builder/[projectSlug]/[blockSlug] - Block page
 ```
 
 ## Authentication and Authorization
