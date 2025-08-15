@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { Generated } from './common'
+import { Generated, slugSchema } from './common'
 import type { Selectable } from 'kysely'
 
 const aiModelSchema = z.enum(['gpt', 'anthropic', 'deepseek', 'gwen'])
@@ -8,6 +8,7 @@ export interface BlockTable {
   id: Generated<string>
   projectId: string
   title: string
+  slug: string
   textWireframe: string | null
   codeWireframe: string | null
   promptHistory: string[]
@@ -21,7 +22,11 @@ export type Block = Selectable<BlockTable>
 export const createBlockSchema = z.object({
   projectId: z.string(),
   title: z.string().min(3).max(300),
-  aiModel: aiModelSchema.optional(),
+})
+export const updateBlockSchema = z.object({ id: z.string(), ...createBlockSchema.shape })
+export const getBlockBySlugSchema = z.object({
+  projectSlug: slugSchema,
+  blockSlug: slugSchema,
 })
 export const promptBlockSchema = z.object({
   id: z.string(),
@@ -39,6 +44,8 @@ export const generateBlockCodeWireframeSchema = z.object({
   aiModel: aiModelSchema.optional(),
 })
 export type CreateBlock = z.infer<typeof createBlockSchema>
+export type UpdateBlock = z.infer<typeof updateBlockSchema>
+export type GetBlockBySlug = z.infer<typeof getBlockBySlugSchema>
 export type PromptBlock = z.infer<typeof promptBlockSchema>
 export type GenerateBlockTextWireframe = z.infer<typeof generateBlockTextWireframeSchema>
 export type GenerateBlockCodeWireframe = z.infer<typeof generateBlockCodeWireframeSchema>

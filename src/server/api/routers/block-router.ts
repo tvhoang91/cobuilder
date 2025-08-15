@@ -1,12 +1,15 @@
 import { z } from 'zod'
-import { createTRPCRouter, designerProcedure, protectedProcedure } from '@/server/api/trpc'
+import { createTRPCRouter, designerProcedure } from '@/server/api/trpc'
 import {
   createBlockSchema,
   promptBlockSchema,
   generateBlockTextWireframeSchema,
   generateBlockCodeWireframeSchema,
+  updateBlockSchema,
+  getBlockBySlugSchema,
 } from '@/schema'
 import { sql } from 'kysely'
+import { generateSlug, generateUniqueSlug } from '@/lib/slug'
 
 export const blockRouter = createTRPCRouter({
   getByProject: designerProcedure.input(z.object({ projectId: z.string() })).query(async ({ input, ctx }) => {
@@ -22,15 +25,64 @@ export const blockRouter = createTRPCRouter({
     return ctx.db.selectFrom('Block').selectAll().where('id', '=', input.id).executeTakeFirst()
   }),
 
+  getBySlug: designerProcedure.input(getBlockBySlugSchema).query(async ({ input, ctx }) => {
+    const { projectSlug, blockSlug } = input
+
+    return ctx.db
+      .selectFrom('Block')
+      .innerJoin('Project', 'Block.projectId', 'Project.id')
+      .selectAll()
+      .where('Project.slug', '=', projectSlug)
+      .where('Block.slug', '=', blockSlug)
+      .executeTakeFirst()
+  }),
+
   create: designerProcedure.input(createBlockSchema).mutation(async ({ input, ctx }) => {
+    const baseSlug = generateSlug(input.title)
+
+    const existingSlugs = await ctx.db
+      .selectFrom('Block')
+      .select('slug')
+      .where('projectId', '=', input.projectId)
+      .execute()
+      .then((results) => results.map((r) => r.slug))
+
+    const uniqueSlug = generateUniqueSlug(baseSlug, existingSlugs)
+
     return ctx.db
       .insertInto('Block')
       .values({
         projectId: input.projectId,
         title: input.title,
+        slug: uniqueSlug,
         promptHistory: [],
-        aiModel: input.aiModel,
       })
+      .returningAll()
+      .executeTakeFirstOrThrow()
+  }),
+
+  update: designerProcedure.input(updateBlockSchema).mutation(async ({ input, ctx }) => {
+    const { id, projectId, title } = input
+
+    const baseSlug = generateSlug(title)
+
+    const existingSlugs = await ctx.db
+      .selectFrom('Block')
+      .select('slug')
+      .where('projectId', '=', projectId)
+      .where('id', '!=', id)
+      .execute()
+      .then((results) => results.map((r) => r.slug))
+
+    const uniqueSlug = generateUniqueSlug(baseSlug, existingSlugs)
+
+    return ctx.db
+      .updateTable('Block')
+      .set({
+        title,
+        slug: uniqueSlug,
+      })
+      .where('id', '=', id)
       .returningAll()
       .executeTakeFirstOrThrow()
   }),

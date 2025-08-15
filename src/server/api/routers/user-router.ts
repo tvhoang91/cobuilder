@@ -2,7 +2,6 @@ import { createTRPCRouter, protectedProcedure, adminProcedure, designerProcedure
 import { updateUserRoleSchema } from '@/schema'
 
 export const userRouter = createTRPCRouter({
-  // Get current user profile (any authenticated user)
   getProfile: protectedProcedure.query(async ({ ctx }) => {
     return ctx.session.user
   }),
@@ -12,7 +11,6 @@ export const userRouter = createTRPCRouter({
     return users
   }),
 
-  // Update user role (Admin only)
   updateRole: adminProcedure.input(updateUserRoleSchema).mutation(async ({ ctx, input }) => {
     // Prevent admin from changing their own role
     if (input.id === ctx.session.user.id) {
@@ -29,7 +27,6 @@ export const userRouter = createTRPCRouter({
     return updatedUser
   }),
 
-  // Get users for design collaboration (Designer and Admin can see other users)
   getCollaborators: designerProcedure.query(async ({ ctx }) => {
     const users = await ctx.db
       .selectFrom('User')

@@ -1,6 +1,6 @@
-import { userRouter } from '@/server/api/routers/user'
-import { projectRouter } from '@/server/api/routers/project'
-import { blockRouter } from '@/server/api/routers/block'
+import { userRouter } from '@/server/api/routers/user-router'
+import { projectRouter } from '@/server/api/routers/project-router'
+import { blockRouter } from '@/server/api/routers/block-router'
 import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc'
 
 /**
