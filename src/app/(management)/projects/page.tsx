@@ -1,6 +1,9 @@
 import { api, HydrateClient } from '@/trpc/server'
 import { auth } from '@/server/auth'
 import { redirect } from 'next/navigation'
+import { ProjectsTable } from './_components/projects-table'
+import NewProjectDialog from './_components/new-project-dialog'
+import { Button } from '@/components/ui/button'
 
 export default async function ProjectsPage() {
   const session = await auth()
@@ -9,11 +12,18 @@ export default async function ProjectsPage() {
     redirect('/')
   }
 
+  const projects = await api.project.getAll()
+
   return (
     <HydrateClient>
       <div className="container mx-auto px-6 py-8">
-        <h1 className="mb-6 text-2xl font-bold">Projects</h1>
-        {/* <ProjectsTable initialProjects={projects} /> */}
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Projects</h1>
+          <NewProjectDialog>
+            <Button>New Project</Button>
+          </NewProjectDialog>
+        </div>
+        <ProjectsTable initialProjects={projects} />
       </div>
     </HydrateClient>
   )

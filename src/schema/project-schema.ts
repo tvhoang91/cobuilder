@@ -21,7 +21,3 @@ export const updateProjectSchema = z.object({ id: z.string(), ...createProjectSc
 export const getProjectBySlugSchema = z.object({
   slug: slugSchema,
 })
-
-export type CreateProject = z.infer<typeof createProjectSchema>
-export type UpdateProject = z.infer<typeof updateProjectSchema>
-export type GetProjectBySlug = z.infer<typeof getProjectBySlugSchema>

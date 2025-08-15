@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import Header from '@/components/layout/header'
 import NavMenu from '@/components/layout/nav-menu'
 import UserMenu from '@/components/layout/user-menu'
+import HeaderLogo from '@/components/layout/header-logo'
 
 async function handleSignIn() {
   'use server'
@@ -17,6 +18,7 @@ export default async function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header>
+        <HeaderLogo />
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none" />
           <NavMenu />

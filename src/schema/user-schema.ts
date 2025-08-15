@@ -48,4 +48,3 @@ export const updateUserRoleSchema = z.object({
   id: z.string(),
   role: z.enum(['DESIGNER', 'GUEST']),
 })
-export type UpdateUserRole = z.infer<typeof updateUserRoleSchema>
