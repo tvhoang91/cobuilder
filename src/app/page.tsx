@@ -5,6 +5,7 @@ import Header from '@/components/layout/header'
 import NavMenu from '@/components/layout/nav-menu'
 import UserMenu from '@/components/layout/user-menu'
 import HeaderLogo from '@/components/layout/header-logo'
+import ProjectCombobox from '@/components/layout/project-combobox'
 
 async function handleSignIn() {
   'use server'
@@ -35,7 +36,7 @@ export default async function Home() {
           {!user ? (
             <form action={handleSignIn}>
               <Button type="submit" size="lg">
-                Login
+                Sign In
               </Button>
             </form>
           ) : user.role === 'GUEST' ? (
@@ -45,9 +46,13 @@ export default async function Home() {
               </p>
             </div>
           ) : user.role === 'DESIGNER' || user.role === 'ADMIN' ? (
-            <Button asChild size="lg">
-              <Link href="/projects">Go to Projects</Link>
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button asChild>
+                <Link href="/projects">Go to Projects List</Link>
+              </Button>
+              or
+              <ProjectCombobox />
+            </div>
           ) : null}
         </div>
 

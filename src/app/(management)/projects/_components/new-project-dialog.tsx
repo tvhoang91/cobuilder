@@ -19,10 +19,13 @@ import { createProjectSchema } from '@/schema/project-schema'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import { Textarea } from '@/components/ui/textarea'
+import { useState } from 'react'
 
 type FormValues = z.infer<typeof createProjectSchema>
 
 export default function NewProjectDialog({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useState(false)
   const form = useForm<FormValues>({
     resolver: zodResolver(createProjectSchema),
     defaultValues: {
@@ -30,6 +33,11 @@ export default function NewProjectDialog({ children }: { children: React.ReactNo
       description: '',
     },
   })
+
+  function onOpenChange(open: boolean) {
+    form.reset()
+    setOpen(open)
+  }
 
   const utils = api.useUtils()
   const createProjectMutation = api.project.create.useMutation()
@@ -39,10 +47,11 @@ export default function NewProjectDialog({ children }: { children: React.ReactNo
     form.reset()
     toast('Project created successfully')
     utils.project.getAll.invalidate()
+    setOpen(false)
   }
 
   return (
-    <Dialog onOpenChange={() => form.reset()}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -71,7 +80,7 @@ export default function NewProjectDialog({ children }: { children: React.ReactNo
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Input placeholder="Project Description" {...field} />
+                      <Textarea placeholder="Project Description" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

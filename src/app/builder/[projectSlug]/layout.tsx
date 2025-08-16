@@ -26,7 +26,7 @@ export default async function ProjectLayout({
       <ProjectSidebar projectSlug={projectSlug} />
       <SidebarInset>
         <Header>
-          <SidebarTrigger />
+          <SidebarTrigger className="mr-2" />
           <ProjectCombobox currentProjectSlug={projectSlug} />
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
             <div className="w-full flex-1 md:w-auto md:flex-none" />

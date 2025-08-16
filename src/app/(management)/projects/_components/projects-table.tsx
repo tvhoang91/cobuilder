@@ -7,12 +7,17 @@ import type { RouterOutputs } from '@/trpc/react'
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import UpdateProjectDialog from './update-project-dialog'
+import { useAuth } from '@/components/hooks/use-auth'
+import Link from 'next/link'
 
 type Project = RouterOutputs['project']['getAll'][0]
 
@@ -21,27 +26,19 @@ interface ProjectsTableProps {
 }
 
 export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
+  const { isAdmin } = useAuth()
+
   const { data: projects = initialProjects } = api.project.getAll.useQuery(undefined, {
     initialData: initialProjects,
     refetchOnMount: false,
   })
 
   const utils = api.useUtils()
-  const updateMutation = api.project.update.useMutation({
-    onSuccess: async () => {
-      await utils.project.getAll.invalidate()
-    },
-  })
   const deleteMutation = api.project.delete.useMutation({
     onSuccess: async () => {
       await utils.project.getAll.invalidate()
     },
   })
-
-  const handleUpdate = (id: string, title: string, description: string) => {
-    if (updateMutation.isPending) return
-    updateMutation.mutate({ id, title, description })
-  }
 
   const handleDelete = (id: string) => {
     if (deleteMutation.isPending) return
@@ -56,28 +53,41 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
             <TableRow>
               <TableHead>Title</TableHead>
               <TableHead>Slug</TableHead>
-              <TableHead></TableHead>
+              <TableHead className="w-10"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {projects.map((project) => (
               <TableRow key={project.id}>
-                <TableCell className="flex items-center gap-2 font-medium">{project.title}</TableCell>
-                <TableCell>{project.slug}</TableCell>
                 <TableCell>
+                  <Button variant="link" asChild>
+                    <Link href={`/builder/${project.slug}`}>{project.title}</Link>
+                  </Button>
+                </TableCell>
+                <TableCell>{project.slug}</TableCell>
+                <TableCell className="w-10">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" className="h-8 w-8 p-0">
                         <span className="sr-only">Open menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
+                        <MoreHorizontal />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuLabel>Update</DropdownMenuLabel>
-                      <DropdownMenuLabel>Delete</DropdownMenuLabel>
-                    </DropdownMenuContent>
+                    <Dialog>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DialogTrigger asChild>
+                          <DropdownMenuItem>Edit</DropdownMenuItem>
+                        </DialogTrigger>
+                        {isAdmin && (
+                          <DropdownMenuItem onClick={() => handleDelete(project.id)}>Delete</DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                      <DialogContent>
+                        <UpdateProjectDialog project={project} />
+                      </DialogContent>
+                    </Dialog>
                   </DropdownMenu>
                 </TableCell>
               </TableRow>

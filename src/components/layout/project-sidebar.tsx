@@ -22,68 +22,32 @@ interface ProjectSidebarProps {
 export default function ProjectSidebar({ projectSlug }: ProjectSidebarProps) {
   const pathname = usePathname()
 
-  // Get project blocks
   const { data: project } = api.project.getBySlug.useQuery({ slug: projectSlug })
-  const { data: blocks = [] } = api.block.getByProject.useQuery(
-    { projectId: project?.id || '' },
-    { enabled: !!project?.id },
-  )
-
-  const navigationItems = [
-    {
-      title: 'Back to Projects',
-      url: '/(management)/projects',
-      icon: ArrowLeft,
-    },
-    {
-      title: 'Project Overview',
-      url: `/builder/${projectSlug}`,
-      icon: FolderOpen,
-    },
-    {
-      title: 'Project Settings',
-      url: `/builder/${projectSlug}/settings`,
-      icon: Settings,
-    },
-  ]
+  const { data: blocks } = api.block.getByProject.useQuery({ projectId: project?.id || '' }, { enabled: !!project?.id })
 
   return (
     <Sidebar>
       <SidebarContent>
-        {/* Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navigationItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={pathname === item.url}>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* Blocks */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Blocks</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href={`/builder/${projectSlug}/new-block`}>
-                    <Plus />
-                    <span>Create Block</span>
+                  <Link href="/projects">
+                    <ArrowLeft />
+                    <span>Back to Projects</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
-              {blocks.map((block) => (
+        <SidebarGroup>
+          <SidebarGroupLabel>Blocks</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {blocks?.map((block) => (
                 <SidebarMenuItem key={block.id}>
                   <SidebarMenuButton asChild isActive={pathname === `/builder/${projectSlug}/${block.slug}`}>
                     <Link href={`/builder/${projectSlug}/${block.slug}`}>
@@ -93,6 +57,13 @@ export default function ProjectSidebar({ projectSlug }: ProjectSidebarProps) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+
+              <SidebarMenuItem>
+                <SidebarMenuButton>
+                  <Blocks />
+                  <span>More menu here</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
