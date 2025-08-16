@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ArrowLeft, FolderOpen, Blocks, Settings, Plus } from 'lucide-react'
+import { ArrowLeft, Blocks } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -23,7 +23,6 @@ export default function ProjectSidebar({ projectSlug }: ProjectSidebarProps) {
   const pathname = usePathname()
 
   const { data: project } = api.project.getBySlug.useQuery({ slug: projectSlug })
-  const { data: blocks } = api.block.getByProject.useQuery({ projectId: project?.id || '' }, { enabled: !!project?.id })
 
   return (
     <Sidebar>
@@ -44,24 +43,15 @@ export default function ProjectSidebar({ projectSlug }: ProjectSidebarProps) {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Blocks</SidebarGroupLabel>
+          <SidebarGroupLabel>Builder</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {blocks?.map((block) => (
-                <SidebarMenuItem key={block.id}>
-                  <SidebarMenuButton asChild isActive={pathname === `/builder/${projectSlug}/${block.slug}`}>
-                    <Link href={`/builder/${projectSlug}/${block.slug}`}>
-                      <Blocks />
-                      <span>{block.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-
               <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <Blocks />
-                  <span>More menu here</span>
+                <SidebarMenuButton asChild isActive={pathname === `/builder/${projectSlug}`}>
+                  <Link href={`/builder/${projectSlug}`}>
+                    <Blocks />
+                    <span>Blocks</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
