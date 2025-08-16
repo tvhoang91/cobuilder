@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
 export default function SignInPage() {
-  const [providers, setProviders] = useState<any>(null)
+  const [providers, setProviders] = useState<Awaited<ReturnType<typeof getProviders>> | null>(null)
 
   useEffect(() => {
     const setAuthProviders = async () => {
@@ -29,9 +29,9 @@ export default function SignInPage() {
         </div>
 
         <div className="space-y-4">
-          {Object.values(providers).map((provider: any) => (
+          {Object.values(providers).map((provider) => (
             <Button
-              key={provider.name}
+              key={provider.id}
               onClick={() => signIn(provider.id, { callbackUrl: '/' })}
               className="w-full"
               variant="outline"

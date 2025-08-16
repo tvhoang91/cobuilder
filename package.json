@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:migrate": "dotenv -e .env.local -- tsx src/server/db/migrate.ts",
-    "db:migrate:down": "dotenv -e .env.local -- tsx src/server/db/migrate.ts down"
+    "db:migrate": "dotenv -e .env.local -- tsx database/migrate.ts",
+    "db:migrate:down": "dotenv -e .env.local -- tsx database/migrate.ts down"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

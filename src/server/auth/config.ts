@@ -1,4 +1,4 @@
-import type { NextAuthConfig, DefaultSession } from 'next-auth'
+import type { NextAuthConfig } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import { env } from '@/env.js'
 import { KyselyAdapter } from './adapter'

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { createTRPCRouter, designerProcedure, adminProcedure, protectedProcedure } from '@/server/api/trpc'
+import { createTRPCRouter, designerProcedure, adminProcedure } from '@/server/api/trpc'
 import { createProjectSchema, updateProjectSchema, getProjectBySlugSchema } from '@/schema'
 import { generateSlug, generateUniqueSlug } from '@/lib/slug'
 

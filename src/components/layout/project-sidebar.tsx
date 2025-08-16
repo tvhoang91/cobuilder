@@ -22,8 +22,6 @@ interface ProjectSidebarProps {
 export default function ProjectSidebar({ projectSlug }: ProjectSidebarProps) {
   const pathname = usePathname()
 
-  const { data: project } = api.project.getBySlug.useQuery({ slug: projectSlug })
-
   return (
     <Sidebar>
       <SidebarContent>
