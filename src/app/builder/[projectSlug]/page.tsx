@@ -30,7 +30,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       <div className="container mx-auto px-6 py-8">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">
-            Project:
+            UI Blocks:
             <span className="text-muted-foreground ml-2 text-xl font-medium">{project.title}</span>
           </h1>
           <NewBlockDialog projectId={project.id}>

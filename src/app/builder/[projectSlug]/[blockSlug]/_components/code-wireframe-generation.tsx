@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { api } from '@/trpc/react'
 import { toast } from 'sonner'
-import type { Block } from '@/schema/block-schema'
+import type { AiModel, Block } from '@/schema/block-schema'
 
 interface CodeWireframeGenerationProps {
   block: Block
@@ -17,7 +17,7 @@ interface CodeWireframeGenerationProps {
 export function CodeWireframeGeneration({ block }: CodeWireframeGenerationProps) {
   const [textWireframe, setTextWireframe] = useState(defaultTextWireframe)
   const [prompts, setPrompts] = useState(defaultPrompts)
-  const [aiModel, setAiModel] = useState<'gpt' | 'anthropic' | 'deepseek' | 'gwen'>('gwen')
+  const [aiModel, setAiModel] = useState<AiModel>('gwen')
 
   const utils = api.useUtils()
   const generateMutation = api.block.generateCodeWireframe.useMutation({
@@ -103,7 +103,7 @@ export function CodeWireframeGeneration({ block }: CodeWireframeGenerationProps)
             <div className="flex items-end gap-2">
               <div className="flex-1">
                 <Label className="text-sm">AI Model</Label>
-                <Select value={aiModel} onValueChange={(value: any) => setAiModel(value)}>
+                <Select value={aiModel} onValueChange={(value: AiModel) => setAiModel(value)}>
                   <SelectTrigger className="mt-1">
                     <SelectValue />
                   </SelectTrigger>
