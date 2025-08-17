@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { api } from '@/trpc/react'
 import { toast } from 'sonner'
 import type { Block } from '@/schema/block-schema'
@@ -45,6 +46,9 @@ export function CodeWireframeIteration({ block }: CodeWireframeIterationProps) {
   }
 
   const handleIterate = () => {
+    toast.info('Updating code coming soon...')
+    return
+
     const validPrompts = prompts.filter((p) => p.trim() !== '')
     if (validPrompts.length === 0) {
       toast.error('Please provide at least one iteration prompt')
@@ -106,20 +110,32 @@ export function CodeWireframeIteration({ block }: CodeWireframeIterationProps) {
 
       <div className="col-span-2">
         <Card className="h-full">
-          <CardContent className="h-full">
-            <div className="flex h-full flex-col">
-              <Label htmlFor="textWireframe" className="mb-2">
-                Wireframe
-              </Label>
-              <p className="text-muted-foreground mb-2 text-sm">
-                Here should show a Code tab in text and a Preview tab with UI
-              </p>
-              <Textarea
-                id="textWireframe"
-                placeholder="Describe the UI structure and components you want to generate..."
-                className="min-h-[400px] flex-1 resize-none"
-              />
-            </div>
+          <CardContent className="h-full p-4">
+            <Tabs defaultValue="code" className="flex h-full flex-col">
+              <TabsList className="w-fit">
+                <TabsTrigger value="code">Code</TabsTrigger>
+                <TabsTrigger value="preview">Preview</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="code" className="mt-4 flex-1">
+                <div className="flex h-full flex-col">
+                  <pre className="flex-1 overflow-auto rounded-lg bg-gray-900 p-4 font-mono text-sm text-gray-100">
+                    <code>{block.codeWireframe || '// No code generated yet'}</code>
+                  </pre>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="preview" className="mt-4 flex-1">
+                <div className="flex h-full items-center justify-center">
+                  <div className="text-center">
+                    <p className="mb-2 text-gray-500">Preview Coming Soon</p>
+                    <p className="text-sm text-gray-400">
+                      Live preview of the generated component will be available here
+                    </p>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>

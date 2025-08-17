@@ -85,7 +85,7 @@ export const blockRouter = createTRPCRouter({
     const { id, prompts, textWireframe, aiModel } = input
     const block = await ctx.db.selectFrom('Block').selectAll().where('id', '=', id).executeTakeFirstOrThrow()
 
-    const codeWireframe = generateCodeWireframe(block, textWireframe, prompts, aiModel)
+    const codeWireframe = await generateCodeWireframe(block, textWireframe, prompts, aiModel)
 
     return ctx.db
       .updateTable('Block')
@@ -105,7 +105,7 @@ export const blockRouter = createTRPCRouter({
     const block = await ctx.db.selectFrom('Block').selectAll().where('id', '=', id).executeTakeFirstOrThrow()
     const fullPromts = [...block.promptHistory, ...prompts]
 
-    const codeWireframe = iterateCodeWireframe(block, fullPromts)
+    const codeWireframe = await iterateCodeWireframe(block, fullPromts)
 
     return ctx.db
       .updateTable('Block')
