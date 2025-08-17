@@ -8,8 +8,6 @@ export type { Block, BlockTable, AiModel } from './block-schema'
 export {
   createBlockSchema,
   updateBlockSchema,
-  promptBlockSchema,
-  generateBlockTextWireframeSchema,
   generateBlockCodeWireframeSchema,
   getBlockBySlugSchema,
 } from './block-schema'

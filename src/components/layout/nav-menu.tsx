@@ -8,6 +8,7 @@ import Link from 'next/link'
 export default async function NavMenu() {
   const session = await auth()
   const isAdmin = session?.user?.role === 'ADMIN'
+  const isDesigner = session?.user?.role === 'DESIGNER'
 
   return (
     <NavigationMenu className="hidden md:flex">
@@ -17,11 +18,13 @@ export default async function NavMenu() {
             <Link href="/">Home</Link>
           </NavLink>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavLink path="/projects">
-            <Link href="/projects">Projects</Link>
-          </NavLink>
-        </NavigationMenuItem>
+        {(isAdmin || isDesigner) && (
+          <NavigationMenuItem>
+            <NavLink path="/projects">
+              <Link href="/projects">Projects</Link>
+            </NavLink>
+          </NavigationMenuItem>
+        )}
         {isAdmin && (
           <NavigationMenuItem>
             <NavLink path="/users">

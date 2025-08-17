@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { Generated, slugSchema } from './common'
+import { Generated, Json, slugSchema } from './common'
 import type { Selectable } from 'kysely'
 
 const aiModelSchema = z.enum(['gpt', 'anthropic', 'deepseek', 'gwen'])
@@ -11,7 +11,7 @@ export interface BlockTable {
   slug: string
   textWireframe: string | null
   codeWireframe: string | null
-  promptHistory: string[]
+  promptHistory: Json<string[]>
   aiModel: AiModel | null
   createdAt: Generated<Date>
   updatedAt: Generated<Date>
@@ -28,24 +28,16 @@ export const getBlockBySlugSchema = z.object({
   projectSlug: slugSchema,
   blockSlug: slugSchema,
 })
-export const promptBlockSchema = z.object({
-  id: z.string(),
-  prompts: z.array(z.string()),
-  aiModel: aiModelSchema.optional(),
-})
-export const generateBlockTextWireframeSchema = z.object({
-  id: z.string(),
-  prompts: z.array(z.string()),
-  aiModel: aiModelSchema.optional(),
-})
 export const generateBlockCodeWireframeSchema = z.object({
   id: z.string(),
   prompts: z.array(z.string()),
-  aiModel: aiModelSchema.optional(),
+  textWireframe: z.string(),
+  aiModel: aiModelSchema,
+})
+export const iterateBlockCodeWireframeSchema = z.object({
+  id: z.string(),
+  prompts: z.array(z.string()),
 })
 export type CreateBlock = z.infer<typeof createBlockSchema>
 export type UpdateBlock = z.infer<typeof updateBlockSchema>
 export type GetBlockBySlug = z.infer<typeof getBlockBySlugSchema>
-export type PromptBlock = z.infer<typeof promptBlockSchema>
-export type GenerateBlockTextWireframe = z.infer<typeof generateBlockTextWireframeSchema>
-export type GenerateBlockCodeWireframe = z.infer<typeof generateBlockCodeWireframeSchema>

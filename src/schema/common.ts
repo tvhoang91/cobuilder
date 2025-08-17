@@ -9,3 +9,4 @@ export const slugSchema = z
 
 export type Generated<T> = ColumnType<T, never, never>
 export type Timestamp = ColumnType<Date, Date | string, Date | string>
+export type Json<T> = ColumnType<T, string, string>

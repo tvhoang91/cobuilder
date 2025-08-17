@@ -1,15 +1,9 @@
 import { z } from 'zod'
 import { createTRPCRouter, designerProcedure } from '@/server/api/trpc'
-import {
-  createBlockSchema,
-  promptBlockSchema,
-  generateBlockTextWireframeSchema,
-  generateBlockCodeWireframeSchema,
-  updateBlockSchema,
-  getBlockBySlugSchema,
-} from '@/schema'
-import { sql } from 'kysely'
+import { createBlockSchema, generateBlockCodeWireframeSchema, updateBlockSchema, getBlockBySlugSchema } from '@/schema'
 import { generateSlug, generateUniqueSlug } from '@/lib/slug'
+import { iterateBlockCodeWireframeSchema } from '@/schema/block-schema'
+import { generateCodeWireframe, iterateCodeWireframe } from '../codegen'
 
 export const blockRouter = createTRPCRouter({
   getByProject: designerProcedure.input(z.object({ projectId: z.string() })).query(async ({ input, ctx }) => {
@@ -31,7 +25,7 @@ export const blockRouter = createTRPCRouter({
     return ctx.db
       .selectFrom('Block')
       .innerJoin('Project', 'Block.projectId', 'Project.id')
-      .selectAll()
+      .selectAll('Block')
       .where('Project.slug', '=', projectSlug)
       .where('Block.slug', '=', blockSlug)
       .executeTakeFirst()
@@ -55,7 +49,7 @@ export const blockRouter = createTRPCRouter({
         projectId: input.projectId,
         title: input.title,
         slug: uniqueSlug,
-        promptHistory: [],
+        promptHistory: '[]',
       })
       .returningAll()
       .executeTakeFirstOrThrow()
@@ -87,36 +81,36 @@ export const blockRouter = createTRPCRouter({
       .executeTakeFirstOrThrow()
   }),
 
-  prompt: designerProcedure.input(promptBlockSchema).mutation(async ({ input, ctx }) => {
-    return ctx.db
-      .updateTable('Block')
-      .set({
-        promptHistory: sql`array_append(promptHistory, ${input.prompts})`,
-      })
-      .where('id', '=', input.id)
-      .returningAll()
-      .executeTakeFirstOrThrow()
-  }),
-
-  generateTextWireframe: designerProcedure.input(generateBlockTextWireframeSchema).mutation(async ({ input, ctx }) => {
-    const textWireframe = 'generateTextWireframe(input)'
-
-    return ctx.db
-      .updateTable('Block')
-      .set({
-        textWireframe,
-      })
-      .where('id', '=', input.id)
-      .returningAll()
-      .executeTakeFirstOrThrow()
-  }),
-
   generateCodeWireframe: designerProcedure.input(generateBlockCodeWireframeSchema).mutation(async ({ input, ctx }) => {
-    const codeWireframe = 'generateCodeWireframe(input)'
+    const { id, prompts, textWireframe, aiModel } = input
+    const block = await ctx.db.selectFrom('Block').selectAll().where('id', '=', id).executeTakeFirstOrThrow()
+
+    const codeWireframe = generateCodeWireframe(block, textWireframe, prompts, aiModel)
 
     return ctx.db
       .updateTable('Block')
       .set({
+        promptHistory: JSON.stringify(prompts),
+        textWireframe,
+        codeWireframe,
+        aiModel,
+      })
+      .where('id', '=', id)
+      .returningAll()
+      .executeTakeFirstOrThrow()
+  }),
+
+  iterateCodeWireframe: designerProcedure.input(iterateBlockCodeWireframeSchema).mutation(async ({ input, ctx }) => {
+    const { id, prompts } = input
+    const block = await ctx.db.selectFrom('Block').selectAll().where('id', '=', id).executeTakeFirstOrThrow()
+    const fullPromts = [...block.promptHistory, ...prompts]
+
+    const codeWireframe = iterateCodeWireframe(block, fullPromts)
+
+    return ctx.db
+      .updateTable('Block')
+      .set({
+        promptHistory: JSON.stringify(fullPromts),
         codeWireframe,
       })
       .where('id', '=', input.id)
