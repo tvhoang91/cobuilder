@@ -14,18 +14,18 @@ export interface Database {
 }
 
 // Configure Neon for serverless environments
-neonConfig.webSocketConstructor = ws
-if (env.NODE_ENV === 'production') {
-  neonConfig.useSecureWebSocket = true
-  neonConfig.pipelineConnect = false
-}
+// neonConfig.webSocketConstructor = ws
+// if (env.NODE_ENV === 'production') {
+//   neonConfig.useSecureWebSocket = true
+//   neonConfig.pipelineConnect = false
+// }
 
 const dialect = new PostgresDialect({
   pool: new Pool({
     connectionString: env.DATABASE_URL,
-    max: 1, // Limit connections for serverless
-    idleTimeoutMillis: 0, // Disable idle timeout
-    connectionTimeoutMillis: 5000, // 5 second timeout
+    // max: 1, // Limit connections for serverless
+    // idleTimeoutMillis: 0, // Disable idle timeout
+    // connectionTimeoutMillis: 5000, // 5 second timeout
   }),
 })
 
